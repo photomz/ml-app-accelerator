@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Word Embedding Analogies</title>
+    <style>
+      /* CSS rules to layout the form and logs sections in a column */
+
+      /* Simple CSS for code along */
+      /* #form-section,
+      #logs-section {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 2rem;
+      }
+
+      #logs-section {
+        flex-direction: column;
+      } */
+
+      /* Fancy CSS to emulate Google's Material UI */
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #fafafa;
+        color: #121212;
+        padding: 20px;
+      }
+
+      #form-section,
+      #logs-section {
+        margin-bottom: 24px;
+      }
+
+      #form-section {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      input {
+        border: 1px solid #121212;
+        border-radius: 4px;
+        padding: 8px;
+        margin: 8px;
+        flex-grow: 1;
+        font-size: 16px;
+        background: none;
+        width: calc(20% - 20px);
+      }
+
+      input:focus {
+        outline: none;
+        border-bottom: 2px solid #6057f7;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 8px 24px;
+        margin: 8px;
+        background-color: #6057f7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+
+      #result {
+        font-size: 18px;
+        margin: 8px 16px;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="form-section">
+      <!-- Text fields for A, B, and C -->
+      <input type="text" id="A" placeholder="king" />
+      <input type="text" id="B" placeholder="man" />
+      <input type="text" id="C" placeholder="queen" />
+      <!-- Button to submit the form -->
+      <button onclick="getAnalogy()">Submit</button>
+    </section>
+
+    <!-- Placeholder for the result -->
+    <p id="result"></p>
+
+    <section id="logs-section">
+      <!-- Button to refresh logs -->
+      <button onclick="getLogs()">Refresh logs</button>
+      <!-- Placeholder for the logs -->
+      <ul id="logs"></ul>
+    </section>
+
+    <script>
+      // Base URL for the Flask application
+      const baseUrl = "http://127.0.0.1:3000";
+
+      function getAnalogy() {
+        // Get the input values
+        const A = document.getElementById("A").value;
+        const B = document.getElementById("B").value;
+        const C = document.getElementById("C").value;
+
+        // Call the backend
+        fetch(`${baseUrl}/analogy?A=${A}&B=${B}&C=${C}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // Display the result
+            document.getElementById("result").innerText = data.word;
+          });
+      }
+
+      function getLogs() {
+        // Call the backend
+        fetch(`${baseUrl}/logs`)
+          .then((response) => response.json())
+          .then((data) => {
+            // Create an item for each log and append it to the logs list
+            const logsList = document.getElementById("logs");
+            logsList.innerHTML = "";
+            data.forEach((log) => {
+              const listItem = document.createElement("li");
+              listItem.innerText = `${log[0]} is to ${log[1]} as ${log[2]} is to ${log[3]}`;
+              logsList.appendChild(listItem);
+            });
+          });
+      }
+    </script>
+  </body>
+</html>
